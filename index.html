@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulateur Pulvérisation Vigne</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .result {
+      margin-top: 2rem;
+      background: #fff;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simulateur de pulvérisation en vigne</h1>
+
+  <label>Volume de bouillie (L/ha): <input type="number" id="volume" /></label>
+  <label>Vitesse d'avancement (km/h): <input type="number" id="vitesse" /></label>
+  <label>Pression (bar): <input type="number" id="pression" /></label>
+  <label>Largeur de rang (m): <input type="number" id="largRang" /></label>
+  <label>Espacement entre ceps (m): <input type="number" id="espCeps" /></label>
+  <label>Hauteur de canopée (m): <input type="number" id="hautCan" /></label>
+  <label>Largeur de canopée (m): <input type="number" id="largCan" /></label>
+  <label>Porosité de la végétation (%): <input type="number" id="porosite" /></label>
+
+  <button onclick="calculer()">Calculer</button>
+
+  <div class="result" id="resultat"></div>
+
+  <script>
+    function calculer() {
+      const vol = parseFloat(document.getElementById("volume").value);
+      const vit = parseFloat(document.getElementById("vitesse").value);
+      const pres = parseFloat(document.getElementById("pression").value);
+      const lr = parseFloat(document.getElementById("largRang").value);
+      const ec = parseFloat(document.getElementById("espCeps").value);
+      const hc = parseFloat(document.getElementById("hautCan").value);
+      const lc = parseFloat(document.getElementById("largCan").value);
+      const p = parseFloat(document.getElementById("porosite").value);
+
+      if (isNaN(vol) || isNaN(vit) || isNaN(pres) || isNaN(lr) || isNaN(ec) || isNaN(hc) || isNaN(lc) || isNaN(p)) {
+        document.getElementById("resultat").innerText = "Veuillez remplir tous les champs.";
+        return;
+      }
+
+      const piedsHa = 10000 / (lr * ec);
+      const surfFoliaire = hc * lc * piedsHa * (1 - p / 100);
+      const nbGouttesTot = vol * 1000000 / 0.0001;
+      const efficDep = 0.25; // valeur moyenne
+      const nbGouttesDep = nbGouttesTot * efficDep;
+      const densite = nbGouttesDep / surfFoliaire;
+      let couverture = "Faible";
+      if (densite > 2000) couverture = "Très bonne";
+      else if (densite > 1000) couverture = "Bonne";
+      else if (densite > 500) couverture = "Moyenne";
+
+      document.getElementById("resultat").innerHTML = `
+        <strong>Résultats :</strong><br/>
+        Surface foliaire estimée : ${surfFoliaire.toFixed(0)} m²/ha<br/>
+        Nombre de gouttelettes déposées : ${nbGouttesDep.toExponential(2)}<br/>
+        Densité de dépôt : ${densite.toFixed(0)} gouttes/m²<br/>
+        <strong>Couverture estimée :</strong> ${couverture}
+      `;
+    }
+  </script>
+</body>
+</html>
