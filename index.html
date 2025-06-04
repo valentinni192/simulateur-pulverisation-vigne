@@ -76,6 +76,15 @@
     <label>Largeur de canopée (m): <input type="number" id="largCan" /></label>
     <label>Porosité de la végétation (%): <input type="number" id="porosite" /></label>
 
+    <label>Type de pulvérisation :
+      <select id="typePulv">
+        <option value="insecticide">Insecticide</option>
+        <option value="herbicide_pre">Herbicide pré-émergence</option>
+        <option value="herbicide_post">Herbicide post-émergence</option>
+        <option value="fongicide">Fongicide</option>
+      </select>
+    </label>
+
     <button onclick="calculer()">Calculer</button>
 
     <div class="result" id="resultat"></div>
@@ -91,29 +100,38 @@
       const hc = parseFloat(document.getElementById("hautCan").value);
       const lc = parseFloat(document.getElementById("largCan").value);
       const p = parseFloat(document.getElementById("porosite").value);
+      const typePulv = document.getElementById("typePulv").value;
 
       if (isNaN(vol) || isNaN(vit) || isNaN(pres) || isNaN(lr) || isNaN(ec) || isNaN(hc) || isNaN(lc) || isNaN(p)) {
         document.getElementById("resultat").innerText = "Veuillez remplir tous les champs.";
         return;
       }
 
+      const seuils = {
+        insecticide: [20, 30],
+        herbicide_pre: [20, 30],
+        herbicide_post: [30, 40],
+        fongicide: [50, 70]
+      };
+
       const piedsHa = 10000 / (lr * ec);
       const surfFoliaire = hc * lc * piedsHa * (1 - p / 100);
       const nbGouttesTot = vol * 1000000 / 0.0001;
-      const efficDep = 0.25; // efficacité de dépôt moyenne (25%)
+      const efficDep = 0.25;
       const nbGouttesDep = nbGouttesTot * efficDep;
-      const densite = nbGouttesDep / surfFoliaire;
-      let couverture = "Faible";
-      if (densite > 2000) couverture = "Très bonne";
-      else if (densite > 1000) couverture = "Bonne";
-      else if (densite > 500) couverture = "Moyenne";
+      const densite = nbGouttesDep / surfFoliaire / 10000; // en gouttes/cm²
+
+      const [min, max] = seuils[typePulv];
+      let qualite = "Insuffisante";
+      if (densite >= max) qualite = "Optimale";
+      else if (densite >= min) qualite = "Suffisante";
 
       document.getElementById("resultat").innerHTML = `
         <strong>Résultats :</strong><br/><br/>
         <strong>Surface foliaire estimée :</strong> ${surfFoliaire.toFixed(0)} m²/ha<br/>
         <strong>Nombre de gouttelettes déposées :</strong> ${nbGouttesDep.toExponential(2)}<br/>
-        <strong>Densité de dépôt :</strong> ${densite.toFixed(0)} gouttes/m²<br/>
-        <strong>Couverture estimée :</strong> <em>${couverture}</em>
+        <strong>Densité de dépôt :</strong> ${densite.toFixed(1)} gouttes/cm²<br/>
+        <strong>Qualité de couverture :</strong> <em>${qualite}</em> (réf. ${min}-${max} gouttes/cm² pour ${typePulv.replace('_', ' ')})
       `;
     }
   </script>
