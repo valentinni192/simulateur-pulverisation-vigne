@@ -131,7 +131,10 @@
         <strong>Surface foliaire estimée :</strong> ${surfFoliaire.toFixed(0)} m²/ha<br/>
         <strong>Nombre de gouttelettes déposées :</strong> ${nbGouttesDep.toExponential(2)}<br/>
         <strong>Densité de dépôt :</strong> ${densite.toFixed(1)} gouttes/cm²<br/>
-        <strong>Qualité de couverture :</strong> <em>${qualite}</em> (réf. ${min}-${max} gouttes/cm² pour ${typePulv.replace('_', ' ')})
+        <strong>Qualité de couverture :</strong> <em>${qualite}</em> (réf. ${min}-${max} gouttes/cm² pour ${typePulv.replace('_', ' ')})<br/><br/>
+        <strong>Nombre de pieds par hectare :</strong> ${piedsHa.toFixed(0)}<br/>
+        <strong>Surface foliaire par pied :</strong> ${(hc * lc).toFixed(2)} m²<br/>
+        <strong>Volume foliaire traité (m³/ha) :</strong> ${(hc * lc * lr * piedsHa).toFixed(2)}
       `;
     }
   </script>
