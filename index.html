@@ -156,23 +156,25 @@
       const nbGouttesTot = vol * 1000000 / 0.0001;
       const efficDep = 0.25;
       const nbGouttesDep = nbGouttesTot * efficDep;
-      const densite = nbGouttesDep / surfFoliaire / 10000; // en gouttes/cm²
+      const densite = nbGouttesDep / surfFoliaire / 10000;
 
-      const doseHa = vol * conc / 100; // en L/ha
-      const doseHaML = doseHa * 1000; // en mL/ha
-      const doseMLm = doseHaML / (10000 / lr); // dose par m linéaire
+      const doseHa = vol * conc / 100;
+      const doseHaML = doseHa * 1000;
+      const doseMLm = doseHaML / (10000 / lr);
 
       const [min, max] = seuils[typePulv];
       let qualite = "Insuffisante";
       if (densite >= max) qualite = "Optimale";
       else if (densite >= min) qualite = "Suffisante";
 
-      const debitTotal = vol * vit * nbRangs * lr / 600; // L/min
+      const debitTotal = vol * vit * nbRangs * lr / 600;
+
+      const busePression = typeBuse.split("_").pop();
 
       document.getElementById("resultat").innerHTML = `
         <strong>Résultats :</strong><br/><br/>
         <strong>Type de pulvérisateur :</strong> ${typePulverisateur.replaceAll('_', ' ')}<br/>
-        <strong>Type de buse :</strong> ${typeBuse.replaceAll('_', ' ')}<br/>
+        <strong>Type de buse :</strong> ${typeBuse.replaceAll('_', ' ')} (Pression nominale : ${busePression} bars)<br/>
         <strong>Surface foliaire estimée :</strong> ${surfFoliaire.toFixed(0)} m²/ha<br/>
         <strong>Nombre de gouttelettes déposées :</strong> ${nbGouttesDep.toExponential(2)}<br/>
         <strong>Densité de dépôt :</strong> ${densite.toFixed(1)} gouttes/cm²<br/>
