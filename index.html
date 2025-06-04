@@ -4,46 +4,82 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulateur Pulvérisation Vigne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      background: #f9f9f9;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      margin: 0;
+      padding: 2rem;
       color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 2rem;
     }
     label {
       display: block;
-      margin-top: 1rem;
+      margin-top: 1.2rem;
+      font-weight: 500;
     }
     input, select {
       width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 0.3rem;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #357ab8;
     }
     .result {
       margin-top: 2rem;
-      background: #fff;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      background: #f5faff;
+      padding: 1.5rem;
+      border-left: 4px solid #4a90e2;
+      border-radius: 8px;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>Simulateur de pulvérisation en vigne</h1>
+  <div class="container">
+    <h1>Simulateur de pulvérisation en vigne</h1>
 
-  <label>Volume de bouillie (L/ha): <input type="number" id="volume" /></label>
-  <label>Vitesse d'avancement (km/h): <input type="number" id="vitesse" /></label>
-  <label>Pression (bar): <input type="number" id="pression" /></label>
-  <label>Largeur de rang (m): <input type="number" id="largRang" /></label>
-  <label>Espacement entre ceps (m): <input type="number" id="espCeps" /></label>
-  <label>Hauteur de canopée (m): <input type="number" id="hautCan" /></label>
-  <label>Largeur de canopée (m): <input type="number" id="largCan" /></label>
-  <label>Porosité de la végétation (%): <input type="number" id="porosite" /></label>
+    <label>Volume de bouillie (L/ha): <input type="number" id="volume" /></label>
+    <label>Vitesse d'avancement (km/h): <input type="number" id="vitesse" /></label>
+    <label>Pression (bar): <input type="number" id="pression" /></label>
+    <label>Largeur de rang (m): <input type="number" id="largRang" /></label>
+    <label>Espacement entre ceps (m): <input type="number" id="espCeps" /></label>
+    <label>Hauteur de canopée (m): <input type="number" id="hautCan" /></label>
+    <label>Largeur de canopée (m): <input type="number" id="largCan" /></label>
+    <label>Porosité de la végétation (%): <input type="number" id="porosite" /></label>
 
-  <button onclick="calculer()">Calculer</button>
+    <button onclick="calculer()">Calculer</button>
 
-  <div class="result" id="resultat"></div>
+    <div class="result" id="resultat"></div>
+  </div>
 
   <script>
     function calculer() {
@@ -64,7 +100,7 @@
       const piedsHa = 10000 / (lr * ec);
       const surfFoliaire = hc * lc * piedsHa * (1 - p / 100);
       const nbGouttesTot = vol * 1000000 / 0.0001;
-      const efficDep = 0.25; // valeur moyenne
+      const efficDep = 0.25; // efficacité de dépôt moyenne (25%)
       const nbGouttesDep = nbGouttesTot * efficDep;
       const densite = nbGouttesDep / surfFoliaire;
       let couverture = "Faible";
@@ -73,11 +109,11 @@
       else if (densite > 500) couverture = "Moyenne";
 
       document.getElementById("resultat").innerHTML = `
-        <strong>Résultats :</strong><br/>
-        Surface foliaire estimée : ${surfFoliaire.toFixed(0)} m²/ha<br/>
-        Nombre de gouttelettes déposées : ${nbGouttesDep.toExponential(2)}<br/>
-        Densité de dépôt : ${densite.toFixed(0)} gouttes/m²<br/>
-        <strong>Couverture estimée :</strong> ${couverture}
+        <strong>Résultats :</strong><br/><br/>
+        <strong>Surface foliaire estimée :</strong> ${surfFoliaire.toFixed(0)} m²/ha<br/>
+        <strong>Nombre de gouttelettes déposées :</strong> ${nbGouttesDep.toExponential(2)}<br/>
+        <strong>Densité de dépôt :</strong> ${densite.toFixed(0)} gouttes/m²<br/>
+        <strong>Couverture estimée :</strong> <em>${couverture}</em>
       `;
     }
   </script>
